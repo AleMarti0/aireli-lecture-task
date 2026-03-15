@@ -3,9 +3,26 @@ import axios from 'axios';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
+
 const registerUser = async (input: PlatformUserCreateInput): Promise<Pick<PlatformUser, "id"> | undefined | null> => {
-  // ToDo: Implement the registerUser function
-  return null
+  try {
+    const response = await fetch(`http://localhost:3001/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    });
+
+    if (!response.ok) return null;
+
+    // Cast the response to the expected shape
+    const data = (await response.json()) as { id: string };
+
+    // Return the object containing the id
+    return { id: data.id };
+  } catch (error) {
+    console.error("InternalClient registerUser error:", error);
+    return null;
+  }
 };
 
 const loginUser = async (input: PlatformUserCreateInput) => {

@@ -6,9 +6,24 @@ import { storefrontClient } from "clients/storefrontClient"
 import internalClient from "clients/internalClient"
 import { COOKIE_ACCESS_TOKEN } from "constants/index"
 
-export async function registerUser({ email, password }: { email: string; password: string }) {
-  const user = await storefrontClient.createUser({ email, password }) // todo: replace this with our client
-  return user
+// /apps/web/app/actions/user.actions.ts
+export async function registerUser(input: any) {
+  // If 'input' is already a plain object from your component
+  let email, password;
+
+  if (input instanceof FormData) {
+    email = input.get("email") as string;
+    password = input.get("password") as string;
+  } else {
+    // If it's a plain object (which happens sometimes with manual calls)
+    email = input.email;
+    password = input.password;
+  }
+
+  // Now call your client
+  const result = await internalClient.registerUser({ email, password });
+  // ... rest of your logic
+  return result;
 }
 
 export async function loginUser({ email, password }: { email: string; password: string }) {
